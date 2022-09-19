@@ -1,9 +1,11 @@
-import { createResource, createSignal } from "solid-js";
-import { supabase } from "./supabaseClient";
+import { createSignal } from "solid-js";
 import { setupRoomWithUser } from "./supabaseService";
+import { useNavigate } from "@solidjs/router";
+import { setRoomName } from "./App";
 
 export const CreateRoom = () => {
   const [input, setInput] = createSignal("");
+  const navigate = useNavigate();
 
   return (
     <form>
@@ -14,7 +16,7 @@ export const CreateRoom = () => {
           </label>
           <div class="flex gap-4">
             <input
-              class="border-black border p-2"
+              class="border-black border p-2 rounded"
               id="username"
               placeholder="Username"
               onInput={(e) => {
@@ -24,9 +26,10 @@ export const CreateRoom = () => {
             <button
               class="border p-2 rounded-md hover:bg-gray-200 active:translate-y-0.5 transition"
               type="submit"
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                setupRoomWithUser(input());
+                const roomName = await setupRoomWithUser(input());
+                navigate(`/room/${roomName}`);
               }}
             >
               Create

@@ -8,7 +8,7 @@ import { supabase } from "./supabaseClient";
 import uniqid from "uniqid";
 
 const createRoom = async () => {
-  const roomId = uniqid("room-");
+  const roomId = uniqid();
   const { data, error } = await supabase
     .from("room")
     .insert([{ name: roomId }])
@@ -35,8 +35,9 @@ const createEstimate = async (roomId: number, userId: number) => {
     .insert([{ room_id: roomId, user_id: userId }]);
 };
 
-export const setupRoomWithUser = async (userName: string) => {
+export const setupRoomWithUser = async (userName: string): Promise<string> => {
   const room = await createRoom();
   const user = await createUser(userName);
   createEstimate(room[0].id, user[0].id);
+  return room[0].name;
 };
